@@ -16,6 +16,8 @@ npm install --save unistyle-flat
 
 ### Module usage
 
+#### Nesting
+
 ```javascript
 var flat = require('unistyle-flat');
 
@@ -28,8 +30,96 @@ flat({
 });
 /**
  * {
- *   'a:hover' {
+ *   'a:hover': {
  *     fontWeight: 'bold'
+ *   }
+ * }
+ */
+```
+
+#### References
+
+```javascript
+var flat = require('unistyle-flat');
+
+flat({
+	a: {
+		'& + span': {
+			fontWeight: 'bold'
+		}
+	}
+});
+/**
+ * {
+ *   'a + span': {
+ *     fontWeight: 'bold'
+ *   }
+ * }
+ */
+```
+
+#### Media Queries
+
+```javascript
+var flat = require('unistyle-flat');
+
+flat({
+	p: {
+		fontSize: '1em',
+		'@media only screen and (max-width: 700px)': {
+			fontSize: '.8em'
+		}
+	}
+});
+/**
+ * {
+ *   p: {
+ *     fontSize: '1em'
+ *   },
+ *   '@media only screen and (max-width: 700px)': {
+ *     p: {
+ *       fontSize: '.8em'
+ *     }
+ *   }
+ * }
+ */
+```
+
+#### Arrays
+
+```javascript
+var flat = require('unistyle-flat');
+
+flat([
+	{body: {color: 'white'}},
+	{body: {background: 'blue'}}
+]);
+/**
+ * {
+ *   body: {
+ *     color: 'white',
+ *     background: 'blue'
+ *   }
+ * }
+ */
+```
+
+#### Grouping of selectors
+
+```javascript
+var flat = require('unistyle-flat');
+
+flat({
+	'.item1': {color: 'white'},
+	'.item2': {color: 'white', background: 'blue'}
+});
+/**
+ * {
+ *   '.item1, .item2': {
+ *     color: 'white'
+ *   },
+ *   '.item2': {
+ *     background: 'blue'
  *   }
  * }
  */
@@ -41,7 +131,7 @@ flat({
 
 | Name | Type | Description |
 |------|------|-------------|
-| obj | `Object` | A Unistyle Object |
+| obj | `Object|Array` | A Unistyle Object or an Array of Unistyle Objects |
 
 Returns: `Object`, the flattened/unnested object.
 
