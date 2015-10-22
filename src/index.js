@@ -30,18 +30,18 @@ function rebuildObject(grouped) {
 			var location = rule.location.concat(rule.selectors.join(', '));
 			location.reduce(function (style, selector, i, arr) {
 				if (!selector) {
-					style[rule.property] = rule.value;
+					if (rule.property === '@font-face') {
+						style[rule.property] = style[rule.property] ? arrify(style[rule.property]).concat(rule.value) : rule.value;
+					} else {
+						style[rule.property] = rule.value;
+					}
 					return style;
 				}
 				var r = {};
 				if (i === arr.length - 1) {
 					r[rule.property] = rule.value;
 				}
-				if (selector === '@font-face') {
-					style[selector] = style[selector] ? arrify(style[selector]).concat(r) : r;
-				} else {
-					style[selector] = assign({}, style[selector], r);
-				}
+				style[selector] = assign({}, style[selector], r);
 				return style[selector];
 			}, style);
 			return style;
@@ -53,18 +53,19 @@ function groupByPropertyAndValue(rules) {
 	var byPropVal = {};
 	for (var i = 0, len = rules.length; i < len; i++) {
 		var rule = rules[i];
+		var id = rule.property + (typeof rule.value !== 'object' ? rule.value : '__' + i);
 		if (!byPropVal[rule.location]) {
 			byPropVal[rule.location] = {};
 		}
-		if (!byPropVal[rule.location][rule.property + rule.value]) {
-			byPropVal[rule.location][rule.property + rule.value] = {
+		if (!byPropVal[rule.location][id]) {
+			byPropVal[rule.location][id] = {
 				location: rule.location,
-				selectors: [rule.selector],
+				selectors: rule.selector ? [rule.selector] : [],
 				property: rule.property,
 				value: rule.value
 			};
-		} else {
-			byPropVal[rule.location][rule.property + rule.value].selectors.push(rule.selector);
+		} else if (rule.selector) {
+			byPropVal[rule.location][id].selectors.push(rule.selector);
 		}
 	}
 	return byPropVal;
@@ -87,6 +88,9 @@ function visit(selector, value, parents, location) {
 		if (hasReference(next)) {
 			next = next.replace(REFERENCE_SELECTOR, parents.pop());
 		}
+	}
+	if (selector === '@font-face') {
+		return {location: [], selector: '', property: selector, value: value};
 	}
 	if (typeof value === 'object' && !Array.isArray(value)) {
 		var nestable = isNestable(selector);

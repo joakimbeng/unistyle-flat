@@ -81,15 +81,15 @@ test('@font-face', function (assert) {
 
 test('@font-faces', function (assert) {
 	assert.plan(1);
-	var actual = flat({'.item': {'@font-face': {fontFamily: 'verdana'}, 'color': 'white'}, '.item2': {'color': 'black', '@font-face': {fontFamily: 'tahoma'}}});
-	var expected = {'@font-face': [{fontFamily: 'verdana'}, {fontFamily: 'tahoma'}], '.item': {color: 'white'}, '.item2': {color: 'black'}};
+	var actual = flat({'.item': {'@font-face': {fontFamily: 'verdana', src: 'url(verdana.ttf)'}, 'color': 'white'}, '.item2': {'color': 'black', '@font-face': {fontFamily: 'tahoma', src: 'url(tahoma.ttf)'}}});
+	var expected = {'@font-face': [{fontFamily: 'verdana', src: 'url(verdana.ttf)'}, {fontFamily: 'tahoma', src: 'url(tahoma.ttf)'}], '.item': {color: 'white'}, '.item2': {color: 'black'}};
 	assert.same(actual, expected);
 });
 
 test('@font-face array', function (assert) {
 	assert.plan(1);
-	var actual = flat({'@font-face': [{fontFamily: 'verdana'}, {fontFamily: 'tahoma'}]});
-	var expected = {'@font-face': [{fontFamily: 'verdana'}, {fontFamily: 'tahoma'}]};
+	var actual = flat({'@font-face': [{fontFamily: 'verdana', src: 'url(verdana.ttf)'}, {fontFamily: 'tahoma', src: 'url(tahoma.ttf)'}]});
+	var expected = {'@font-face': [{fontFamily: 'verdana', src: 'url(verdana.ttf)'}, {fontFamily: 'tahoma', src: 'url(tahoma.ttf)'}]};
 	assert.same(actual, expected);
 });
 
