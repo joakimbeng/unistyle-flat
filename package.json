@@ -18,7 +18,8 @@
   ],
   "author": {
     "name": "Joakim Carlstein",
-    "email": "joakim@klei.se"
+    "email": "joakim@klei.se",
+    "url": "http://joakim.beng.se/"
   },
   "license": "MIT",
   "devDependencies": {
