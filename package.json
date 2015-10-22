@@ -1,6 +1,6 @@
 {
   "name": "unistyle-flat",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Unnest/flatten a Unistyle Object to a structure which resembles real CSS",
   "main": "src/index.js",
   "scripts": {
