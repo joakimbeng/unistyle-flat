@@ -16,6 +16,13 @@ test('nested selectors', function (assert) {
 	assert.same(actual, expected);
 });
 
+test('array', function (assert) {
+	assert.plan(1);
+	var actual = flat([{ul: {color: 'white'}}, {ul: {background: 'black'}}]);
+	var expected = {ul: {color: 'white', background: 'black'}};
+	assert.same(actual, expected);
+});
+
 test('nested selectors in multiple levels', function (assert) {
 	assert.plan(1);
 	var actual = flat({ul: {li: {span: {fontSize: '80%'}}}});
@@ -51,6 +58,13 @@ test('psuedo selectors', function (assert) {
 	assert.same(actual, expected);
 });
 
+test('grouping of selectors', function (assert) {
+	assert.plan(1);
+	var actual = flat({'.item': {color: 'white'}, '.item2': {color: 'white', background: 'black'}});
+	var expected = {'.item, .item2': {color: 'white'}, '.item2': {background: 'black'}};
+	assert.same(actual, expected);
+});
+
 test('multiple selectors', function (assert) {
 	assert.plan(1);
 	var actual = flat({'.item, .item2': {':hover': {fontStyle: 'italic'}}});
@@ -62,6 +76,27 @@ test('@font-face', function (assert) {
 	assert.plan(1);
 	var actual = flat({'.item': {':hover': {fontStyle: 'italic', '@font-face': {fontFamily: 'verdana'}}}});
 	var expected = {'.item:hover': {fontStyle: 'italic'}, '@font-face': {fontFamily: 'verdana'}};
+	assert.same(actual, expected);
+});
+
+test('@font-faces', function (assert) {
+	assert.plan(1);
+	var actual = flat({'.item': {'@font-face': {fontFamily: 'verdana'}, 'color': 'white'}, '.item2': {'color': 'black', '@font-face': {fontFamily: 'tahoma'}}});
+	var expected = {'@font-face': [{fontFamily: 'verdana'}, {fontFamily: 'tahoma'}], '.item': {color: 'white'}, '.item2': {color: 'black'}};
+	assert.same(actual, expected);
+});
+
+test('@font-face array', function (assert) {
+	assert.plan(1);
+	var actual = flat({'@font-face': [{fontFamily: 'verdana'}, {fontFamily: 'tahoma'}]});
+	var expected = {'@font-face': [{fontFamily: 'verdana'}, {fontFamily: 'tahoma'}]};
+	assert.same(actual, expected);
+});
+
+test('array of @font-faces', function (assert) {
+	assert.plan(1);
+	var actual = flat([{'@font-face': {fontFamily: 'verdana'}}, {'@font-face': {fontFamily: 'tahoma'}}]);
+	var expected = {'@font-face': [{fontFamily: 'verdana'}, {fontFamily: 'tahoma'}]};
 	assert.same(actual, expected);
 });
 

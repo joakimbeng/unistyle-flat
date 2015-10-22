@@ -1,13 +1,22 @@
 'use strict';
 var splitSelectors = require('split-css-selector');
 var assign = require('object-assign');
+var arrify = require('arrify');
 
 var PSUEDO_WITHOUT_SELECTOR = /(^|\s)(:{1,2})(\w)/g;
 var REFERENCE_SELECTOR = /&/g;
 var NESTABLE_AT_RULE = /@\S*\b(media|supports|keyframes)\b/;
 
 module.exports = function flat(obj) {
-	var rules = getRules(obj);
+	var rules;
+
+	if (Array.isArray(obj)) {
+		rules = obj.reduce(function (r, o) {
+			return r.concat(getRules(o));
+		}, []);
+	} else {
+		rules = getRules(obj);
+	}
 
 	var byPropVal = groupByPropertyAndValue(rules);
 
@@ -28,7 +37,11 @@ function rebuildObject(grouped) {
 				if (i === arr.length - 1) {
 					r[rule.property] = rule.value;
 				}
-				style[selector] = assign({}, style[selector], r);
+				if (selector === '@font-face') {
+					style[selector] = style[selector] ? arrify(style[selector]).concat(r) : r;
+				} else {
+					style[selector] = assign({}, style[selector], r);
+				}
 				return style[selector];
 			}, style);
 			return style;
